@@ -48,6 +48,8 @@ export const routes = [
     }
 ]
 
+export type SingleProblemProps =  {     id: string  ,   title: string   ,  description: string ,    Submission: {         problemId: string   ,      id: string ,        userId: string   ,      code: string    ,     language: Language   ,      status: SubmissionStatus   ,      createdAt: Date    ,     updatedAt: Date     }[] }
+
 export type ProblemDisplayProps =  ({     Submission: {         status: SubmissionStatus     }[] } & {     id: string  ,   title: string   ,  description: string })
 
 export type SubmissionProps = {     language: Language  ,   status: SubmissionStatus  ,   problem: {         title: string     }    , user: {         username: string     } }

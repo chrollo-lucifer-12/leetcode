@@ -138,3 +138,23 @@ export const getAllProblems = async () => {
     }
 }
 
+export const getProblemDetails = async (problemId : string) => {
+    try {
+        const problem = await prisma.problem.findUnique({
+            where : {
+                id : problemId
+            },
+            select: {
+                Submission : true,
+                id : true,
+                title : true,
+                description : true,
+
+            }
+        })
+        return problem;
+    } catch (e) {
+        console.log(e)
+    }
+}
+

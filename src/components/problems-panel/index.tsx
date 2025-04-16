@@ -19,7 +19,7 @@ const ProblemsPanel = () => {
                             <span className="text-sm">📄</span>
                         </div>
                         <div className="py-4 flex-grow">
-                            <Link href={`/problems/${problem.id}`} className="text-blue-400 hover:underline">
+                            <Link href={`/problem/${problem.id}`} className="text-blue-400 hover:underline">
                                 {problem.title}
                             </Link>
                         </div>
