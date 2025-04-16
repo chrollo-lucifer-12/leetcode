@@ -19,6 +19,12 @@ export const ProblemFormSchema = z.object({
     description : z.string().min(1,{message : "Description cannot be empty"})
 })
 
+export const TestCaseSchema = z.object({
+    input : z.string().min(1, {message : "Input cannot be empty"}),
+    output : z.string().min(1, {message : "Output cannot be empty"}),
+    problemId : z.string()
+})
+
 export const routes = [
     {
         name : "Problems",

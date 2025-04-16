@@ -76,3 +76,25 @@ export const deleteProblem = async (problemId : string) => {
         console.log(e);
     }
 }
+
+export const addTestCase = async ( input : string, output : string, problemId : string,) => {
+    try {
+         await prisma.testCase.create({
+             data : {
+                 problemId,
+                 input,
+                 output
+             }
+         })
+        return {
+             success : true,
+             message : "Test case added successfully",
+        }
+    } catch (e) {
+        console.log(e);
+        return {
+            success : false,
+            message : "Test case cannot be added",
+        }
+    }
+}

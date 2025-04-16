@@ -6,7 +6,6 @@ import {ProblemProps} from "@/lib/definitions";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -15,6 +14,7 @@ import {
 import AddProblemForm from "@/components/admin-panel/add-problem-form";
 import {DeleteIcon, PlusIcon} from "lucide-react";
 import {useMutationData} from "@/hooks/useMutationData";
+import AddTestcaseForm from "@/components/admin-panel/add-testcase-form";
 
 
 const ProblemsPanel = () => {
@@ -43,7 +43,9 @@ const ProblemsPanel = () => {
                         <TableRow key={problem.id}>
                             <TableCell className={"text-white"}>{problem.title}</TableCell>
                             <TableCell className={"text-white"}>{problem._count.Submission}</TableCell>
-                            <TableCell className={"text-green-200 cursor-pointer text-center"}><PlusIcon/></TableCell>
+                            <TableCell className={"text-green-200 cursor-pointer text-center"}>
+                                <AddTestcaseForm problemId={problem.id}/>
+                            </TableCell>
                             <TableCell onClick={async () => {
                                 await mutateAsync({problemId : problem.id})
                             }} className={"text-red-200 cursor-pointer text-center"}><DeleteIcon/></TableCell>
