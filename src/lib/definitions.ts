@@ -12,3 +12,18 @@ export const SignupFormSchema = z.object({
         })
         .trim(),
 })
+
+export const routes = [
+    {
+        name : "Problems",
+        href : "/problems"
+    },
+    {
+        name : "Leaderboard",
+        href : "/leaderboard"
+    },
+    {
+        name : "Contests",
+        href : "/contests"
+    }
+]

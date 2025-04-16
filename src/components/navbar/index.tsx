@@ -1,7 +1,7 @@
 import UserButton from "@/components/user-button";
 
 const Navbar = () => {
-    return <nav className={"bg-[#292929] p-3 flex justify-between text-white"}>
+    return <nav className={"bg-[#292929] p-3 w-full flex justify-between text-white"}>
         <p>cses</p>
         <UserButton/>
     </nav>
