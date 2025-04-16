@@ -3,9 +3,18 @@
 import {prisma} from "@/lib/db";
 import {hash, compare} from "bcrypt"
 import {createSession, generateSessionToken} from "@/lib/session";
-import {setSessionCookie} from "@/lib/cookie";
+import {deleteSessionTokenCookie, setSessionCookie} from "@/lib/cookie";
+import {globalPOSTRateLimit} from "@/lib/request";
 
 export const createUser = async (username : string, password : string) => {
+
+    if (!await globalPOSTRateLimit()) {
+        return {
+            success : false,
+            message : "Too many requests"
+        }
+    }
+
     try {
         const existingUser = await prisma.user.findUnique({where : {username}})
         if (existingUser) {
@@ -21,6 +30,7 @@ export const createUser = async (username : string, password : string) => {
                 username
             }
         })
+        await deleteSessionTokenCookie();
         return {
             success: true,
             message: "User created successfully. Redirecting to login...",
@@ -35,6 +45,12 @@ export const createUser = async (username : string, password : string) => {
 }
 
 export const loginUser = async (username : string, password : string) => {
+    if (!await globalPOSTRateLimit()) {
+        return {
+            success : false,
+            message : "Too many requests"
+        }
+    }
     try {
         const existingUser = await prisma.user.findUnique({where : {username}})
         if (!existingUser) {
@@ -50,6 +66,7 @@ export const loginUser = async (username : string, password : string) => {
                 message : "Username or password is incorrect"
             }
         }
+        await deleteSessionTokenCookie();
         const token = await generateSessionToken();
         const session = await createSession(token, existingUser.id);
         await setSessionCookie(token,session.expiresAt);
@@ -63,5 +80,19 @@ export const loginUser = async (username : string, password : string) => {
             success : false,
             message : "Cannot Login user"
         }
+    }
+}
+
+export const userDetails = async (username : string) => {
+    try {
+        const userDetails = await prisma.user.findUnique({
+            where : {username},
+            select : {
+                username : true
+            }
+        })
+        return userDetails;
+    } catch (e) {
+        console.log(e);
     }
 }

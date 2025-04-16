@@ -1,9 +1,9 @@
-import Link from "next/link";
+import UserButton from "@/components/user-button";
 
 const Navbar = () => {
     return <nav className={"bg-[#292929] p-3 flex justify-between text-white"}>
         <p>cses</p>
-        <Link href={"/login"}>Login</Link>
+        <UserButton/>
     </nav>
 }
 
