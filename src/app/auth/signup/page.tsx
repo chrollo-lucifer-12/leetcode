@@ -5,6 +5,7 @@ import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {useEffect} from "react";
 import {useRouter} from "next/navigation";
+import Image from "next/image";
 
 const Page = () => {
 
@@ -35,7 +36,7 @@ const Page = () => {
                 <Button disabled={isPending}
                         className={"w-full bg-white text-black hover:bg-gray-100 transition duration-150"}>
                     {
-                        isPending ? "Loading..." : "Signup"
+                        isPending ? (<Image src={"/loader.svg"} width={20} height={20} alt={"loader"}/>) : "Signup"
                     }
                 </Button>
             </form>
