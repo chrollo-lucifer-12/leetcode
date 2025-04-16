@@ -1,9 +1,29 @@
 import React from "react";
+import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
+import {fetchNumberOfProblems} from "@/actions/problem";
+import {countSolvedProblems} from "@/actions/user";
 
-const Layout = ({children} : {children : React.ReactNode}) => {
-    return <main className={"bg-[#181818] h-screen"}>
-        {children}
-    </main>
+const Layout = async ({children} : {children : React.ReactNode}) => {
+
+    const query = new QueryClient();
+
+    await query.prefetchQuery({
+        queryKey: ["number-problems"],
+        queryFn: () => fetchNumberOfProblems()
+    })
+
+    await query.prefetchQuery({
+        queryKey: ["solved-problems"],
+        queryFn: () => countSolvedProblems()
+    })
+
+    return (
+        <HydrationBoundary state={dehydrate(query)}>
+            <main className={"bg-[#181818] h-screen"}>
+                {children}
+            </main>
+        </HydrationBoundary>
+    )
 }
 
 export default Layout

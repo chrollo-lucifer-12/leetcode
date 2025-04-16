@@ -2,6 +2,7 @@ import Navbar from "@/components/navbar";
 import {routes} from "@/lib/definitions";
 import Link from "next/link";
 import React from "react"
+import ProgressBar from "@/components/progress-bar";
 
 const Page = () => {
     return <div className={"w-full flex flex-col justify-center items-center h-full"}>
@@ -21,6 +22,10 @@ const Page = () => {
             </div>
 
             <div className={"border-1 mt-2 border-[#898989]"}></div>
+            <div className={"w-[20%]"}>
+
+            <ProgressBar/>
+            </div>
         </div>
     </div>
 }

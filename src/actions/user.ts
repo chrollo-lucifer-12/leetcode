@@ -3,7 +3,7 @@
 import {prisma} from "@/lib/db";
 import {hash, compare} from "bcrypt"
 import {createSession, generateSessionToken} from "@/lib/session";
-import {deleteSessionTokenCookie, setSessionCookie} from "@/lib/cookie";
+import {deleteSessionTokenCookie, getCurrentSession, setSessionCookie} from "@/lib/cookie";
 import {globalPOSTRateLimit} from "@/lib/request";
 
 export const createUser = async (username : string, password : string) => {
@@ -94,5 +94,29 @@ export const userDetails = async (username : string) => {
         return userDetails;
     } catch (e) {
         console.log(e);
+    }
+}
+
+
+export const countSolvedProblems = async () => {
+    try {
+        const {user} = await getCurrentSession();
+        if (!user) return 0;
+        const solvedProblems = await prisma.submission.count({
+            where : {
+                AND : [
+                    {
+                        userId : user!.id
+                    },
+                    {
+                        status : "ACCEPTED"
+                    }
+                ]
+            }
+        })
+        return solvedProblems;
+    } catch (e) {
+        console.log(e);
+        return 0;
     }
 }

@@ -1,7 +1,10 @@
 import {userDetails} from "@/actions/user";
 
-const Page = async ({params} : {params : { userName : string}}) => {
-    const {userName} = await params
+type Params = Promise<{ userName : string }>
+
+const Page = async (props : {params : Params}) => {
+    const params = await props.params
+    const {userName} = params
 
     const userInfo = await userDetails(userName);
 
