@@ -7,6 +7,7 @@ import {useState} from "react";
 import React from "react"
 import Task from "@/components/problem-display/task";
 import Results from "@/components/problem-display/Results";
+import Submit from "@/components/problem-display/submit";
 
 const tabs = ["TASK", "SUBMIT", "RESULTS"] as const;
 
@@ -41,15 +42,16 @@ const ProblemDisplay = ({problemId} : {problemId : string}) => {
             }
         </div>
         <div className={"border-1"}/>
-        <div className={"mt-4 w-[60%] h-[550px] border-r"}>
+        <div className={"mt-4 w-[60%] h-[550px]"}>
             {
                 tab === "TASK" &&  <Task description={problem.description}/>
             }
             {
                 tab === "RESULTS" && <Results Submissions={problem.Submission}/>
             }
-
-
+            {
+                tab === "SUBMIT" && <Submit/>
+            }
         </div>
     </div>
 }
