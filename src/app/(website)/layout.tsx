@@ -1,6 +1,6 @@
 import React from "react";
 import {dehydrate, HydrationBoundary, QueryClient} from "@tanstack/react-query";
-import {fetchNumberOfProblems} from "@/actions/problem";
+import {fetchNumberOfProblems, getLatestProblems} from "@/actions/problem";
 import {countSolvedProblems} from "@/actions/user";
 
 const Layout = async ({children} : {children : React.ReactNode}) => {
@@ -15,6 +15,11 @@ const Layout = async ({children} : {children : React.ReactNode}) => {
     await query.prefetchQuery({
         queryKey: ["solved-problems"],
         queryFn: () => countSolvedProblems()
+    })
+
+    await query.prefetchQuery({
+        queryKey : ["latest-problems"],
+        queryFn : () => getLatestProblems()
     })
 
     return (

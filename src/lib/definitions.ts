@@ -31,6 +31,10 @@ export const routes = [
         href : "/"
     },
     {
+      name : "Problems",
+      href : "/problems"
+    },
+    {
         name : "Submissions",
         href : "/submissions"
     },

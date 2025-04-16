@@ -98,3 +98,17 @@ export const addTestCase = async ( input : string, output : string, problemId : 
         }
     }
 }
+
+export const getLatestProblems = async () => {
+    try {
+        const problems = await prisma.problem.findMany({
+            take : 10,
+            select : {
+                title : true
+            }
+        })
+        return problems
+    } catch (e) {
+        console.log(e);
+    }
+}
