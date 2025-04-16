@@ -1,4 +1,5 @@
 import {z} from "zod"
+import {Language} from "@prisma/client"
 
 export const SignupFormSchema = z.object({
     username : z.string().min(3, {message : "Username is too short"}),
@@ -11,6 +12,11 @@ export const SignupFormSchema = z.object({
             message: 'Contain at least one special character.',
         })
         .trim(),
+})
+
+export const ProblemFormSchema = z.object({
+    title : z.string().min(1, {message : "Title cannot be empty"}),
+    description : z.string().min(1,{message : "Description cannot be empty"})
 })
 
 export const routes = [
@@ -27,3 +33,8 @@ export const routes = [
         href : "/contests"
     }
 ]
+
+export type ProblemProps = ({     TestCase: {         id: string      ,   input: string  ,       output: string      ,   problemId: string     }[]    , _count: {         Submission: number     } } & {     id: string  ,   title: string   ,  description: string })
+
+export type CodeProps =  {     code: string   ,  id: string   ,  language: Language}
+
