@@ -48,6 +48,8 @@ export const routes = [
     }
 ]
 
+export type ProblemDisplayProps =  ({     Submission: {         status: SubmissionStatus     }[] } & {     id: string  ,   title: string   ,  description: string })
+
 export type SubmissionProps = {     language: Language  ,   status: SubmissionStatus  ,   problem: {         title: string     }    , user: {         username: string     } }
 
 export type ProblemProps = ({     TestCase: {         id: string      ,   input: string  ,       output: string      ,   problemId: string     }[]    , _count: {         Submission: number     } } & {     id: string  ,   title: string   ,  description: string })

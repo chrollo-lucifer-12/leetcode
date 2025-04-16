@@ -1,6 +1,7 @@
 "use server"
 
 import {prisma} from "@/lib/db";
+import {getCurrentSession} from "@/lib/cookie";
 
 export const fetchNumberOfProblems = async () => {
     try {
@@ -112,3 +113,28 @@ export const getLatestProblems = async () => {
         console.log(e);
     }
 }
+
+export const getAllProblems = async () => {
+    try {
+        const {user} = await getCurrentSession();
+
+        const problems = await prisma.problem.findMany({
+            include : {
+                Submission : {
+                    where : {
+                        user : {
+                            id : user!.id
+                        }
+                    },
+                    select : {
+                        status : true
+                    }
+                }
+            }
+        });
+        return problems;
+    } catch (e) {
+        console.log(e);
+    }
+}
+

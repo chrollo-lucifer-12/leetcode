@@ -12,7 +12,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import AddProblemForm from "@/components/admin-panel/add-problem-form";
-import {DeleteIcon, PlusIcon} from "lucide-react";
+import {DeleteIcon} from "lucide-react";
 import {useMutationData} from "@/hooks/useMutationData";
 import AddTestcaseForm from "@/components/admin-panel/add-testcase-form";
 
