@@ -1,7 +1,7 @@
 "use client"
 
 import {useQueryData} from "@/hooks/useQueryData";
-import {fetchAllProblems} from "@/actions/problem";
+import {deleteProblem, fetchAllProblems} from "@/actions/problem";
 import {ProblemProps} from "@/lib/definitions";
 import {
     Table,
@@ -13,10 +13,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import AddProblemForm from "@/components/admin-panel/add-problem-form";
+import {DeleteIcon, PlusIcon} from "lucide-react";
+import {useMutationData} from "@/hooks/useMutationData";
 
 
 const ProblemsPanel = () => {
     const {data, isFetching} = useQueryData(["all-problems"], () => fetchAllProblems());
+    const {mutateAsync} = useMutationData(["delete-problem"], (data) => deleteProblem(data.problemId), "all-problems");
 
     const allProblems = data as ProblemProps[];
 
@@ -30,6 +33,8 @@ const ProblemsPanel = () => {
                 <TableRow >
                     <TableHead className={"text-white"}>Problem name</TableHead>
                     <TableHead className={"text-white"}>Successful submissions</TableHead>
+                    <TableHead className={"text-white"}>Add Test Case</TableHead>
+                    <TableHead className={"text-white"}>Delete Problem</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -38,6 +43,10 @@ const ProblemsPanel = () => {
                         <TableRow key={problem.id}>
                             <TableCell className={"text-white"}>{problem.title}</TableCell>
                             <TableCell className={"text-white"}>{problem._count.Submission}</TableCell>
+                            <TableCell className={"text-green-200 cursor-pointer text-center"}><PlusIcon/></TableCell>
+                            <TableCell onClick={async () => {
+                                await mutateAsync({problemId : problem.id})
+                            }} className={"text-red-200 cursor-pointer text-center"}><DeleteIcon/></TableCell>
                         </TableRow>
                     ))
                 }

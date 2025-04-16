@@ -64,3 +64,15 @@ export const addNewProblem = async (title : string, description : string) => {
         }
     }
 }
+
+export const deleteProblem = async (problemId : string) => {
+    try {
+        await prisma.problem.delete({
+            where : {
+                id : problemId
+            },
+        })
+    } catch (e) {
+        console.log(e);
+    }
+}
