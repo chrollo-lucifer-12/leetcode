@@ -1,3 +1,5 @@
+"use client"
+
 import {routes} from "@/lib/definitions";
 import React from "react";
 import Link from "next/link";

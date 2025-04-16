@@ -27,6 +27,10 @@ export const TestCaseSchema = z.object({
 
 export const routes = [
     {
+        name : "Home",
+        href : "/"
+    },
+    {
         name : "Submissions",
         href : "/submissions"
     },

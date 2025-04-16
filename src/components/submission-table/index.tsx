@@ -3,6 +3,11 @@
 import { useQueryData } from "@/hooks/useQueryData";
 import { fetchSubmissions } from "@/actions/submissions";
 import { SubmissionProps } from "@/lib/definitions";
+import RoutesNavbar from "@/components/routes-navbar";
+import React from "react";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import AddTestcaseForm from "@/components/admin-panel/add-testcase-form";
+import {DeleteIcon} from "lucide-react";
 
 const SubmissionTable = () => {
     const { data, isFetching } = useQueryData(["submissions"], () => fetchSubmissions());
@@ -14,27 +19,33 @@ const SubmissionTable = () => {
     }
 
     return (
-        <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-300">
-                <thead className="bg-gray-100">
-                <tr>
-                    <th className="px-4 py-2 border">User</th>
-                    <th className="px-4 py-2 border">Problem</th>
-                    <th className="px-4 py-2 border">Language</th>
-                    <th className="px-4 py-2 border">Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                {submissions?.map((submission, index) => (
-                    <tr key={index} className="text-center">
-                        <td className="px-4 py-2 border">{submission.user.username}</td>
-                        <td className="px-4 py-2 border">{submission.problem.title}</td>
-                        <td className="px-4 py-2 border">{submission.language}</td>
-                        <td className="px-4 py-2 border">{submission.status}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+        <div className={"w-full flex flex-col justify-center items-center h-full"}>
+            <div className={"mt-10 h-full w-[80%]"}>
+                <RoutesNavbar/>
+                <div className={"border-1 mt-2 border-[#898989]"}></div>
+                <Table>
+                    <TableHeader>
+                        <TableRow >
+                            <TableHead className={"text-white"}>Problem</TableHead>
+                            <TableHead className={"text-white"}>Language</TableHead>
+                            <TableHead className={"text-white"}>User</TableHead>
+                            <TableHead className={"text-white"}>Status</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {
+                            submissions.map((submission,index) => (
+                                <TableRow key={index}>
+                                    <TableCell className={"text-white"}>{submission.problem.title}</TableCell>
+                                    <TableCell className={"text-white"}>{submission.language}</TableCell>
+                                    <TableCell className={"text-white"}>{submission.user.username}</TableCell>
+                                    <TableCell className={"text-white"}>{submission.status}</TableCell>
+                                </TableRow>
+                            ))
+                        }
+                    </TableBody>
+                </Table>
+            </div>
         </div>
     );
 }
