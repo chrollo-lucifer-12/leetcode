@@ -12,7 +12,7 @@ const Page =  async (props : {params : Params}) => {
 
     await query.prefetchQuery({
         queryKey : ["problem-details"],
-        queryFn : () => getProblemDetails(problemId)
+        queryFn : () => getProblemDetails(problemId),
     })
 
     return <HydrationBoundary state={dehydrate(query)}>

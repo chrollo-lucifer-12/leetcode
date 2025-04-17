@@ -17,6 +17,8 @@ const ProblemDisplay = ({problemId} : {problemId : string}) => {
     const problem = data as SingleProblemProps;
 
     const [tab, setTab] = useState<"TASK" | "SUBMIT" | "RESULTS" >("TASK")
+    const [token, setToken] = useState("")
+    const [submissionId, setSubmissionId] = useState("")
 
     if (isFetching) {
         return <div className="text-white text-center mt-10">Loading problem details...</div>;
@@ -47,10 +49,10 @@ const ProblemDisplay = ({problemId} : {problemId : string}) => {
                 tab === "TASK" &&  <Task description={problem.description}/>
             }
             {
-                tab === "RESULTS" && <Results Submissions={problem.Submission}/>
+                tab === "RESULTS" && <Results submissionId={submissionId} token={token} Submissions={problem.Submission}/>
             }
             {
-                tab === "SUBMIT" && <Submit/>
+                tab === "SUBMIT" && <Submit setSubmissionId={setSubmissionId} setToken={setToken} setTab={setTab} problemId = {problemId} />
             }
         </div>
     </div>

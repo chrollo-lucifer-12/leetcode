@@ -2,12 +2,20 @@
 
 
 import {Language, SubmissionStatus} from "@prisma/client";
+import {Button} from "@/components/ui/button";
+import {getSubmission} from "@/actions/submissions";
+import {usePoll} from "@/hooks/usePoll";
 
 interface ResultsProps {
-    Submissions : {         problemId: string   ,      id: string  ,       userId: string ,        code: string   ,      language: Language      ,   status: SubmissionStatus     ,    createdAt: Date     ,    updatedAt: Date     }[]
+    Submissions : {         problemId: string   ,      id: string  ,       userId: string ,        code: string   ,      language: Language      ,   status: SubmissionStatus     ,    createdAt: Date     ,    updatedAt: Date     }[],
+    token : string,
+    submissionId : string
 }
 
-const Results = ({Submissions} : ResultsProps) => {
+const Results = ({Submissions, submissionId, token} : ResultsProps) => {
+
+    const {mutateAsync} = usePoll(token,submissionId);
+
     return <div className="overflow-x-auto text-white p-4 rounded">
         <table className="table-auto w-full text-sm border border-gray-600">
             <thead>
@@ -33,6 +41,9 @@ const Results = ({Submissions} : ResultsProps) => {
             ))}
             </tbody>
         </table>
+        <Button onClick={mutateAsync}>
+            refresh
+        </Button>
     </div>
 }
 

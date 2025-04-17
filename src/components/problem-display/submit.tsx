@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState, useTransition} from "react";
 import {
     Select,
     SelectContent,
@@ -7,15 +7,39 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {Button} from "@/components/ui/button";
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import {addSubmission} from "@/actions/submissions";
 
 const languages = ["JS", "CPP"];
 
-const Submit = () => {
+const Submit = ({problemId, setTab, setToken, setSubmissionId} : {problemId : string, setSubmissionId : React.Dispatch<React.SetStateAction<string>>, setToken : React.Dispatch<React.SetStateAction<string>>, setTab :  React.Dispatch<React.SetStateAction<"TASK" | "SUBMIT" | "RESULTS">>}) => {
     const [value, setValue] = useState("");
     const linesCount = value.split("\n").length;
     const lines = Array.from({ length: linesCount }, (_, i) => i + 1);
+
+    const [isPending, startTransition] =  useTransition()
+
+    const handleSubmit = async () => {
+        if (!value) {
+            alert("Please select a language and provide code before submitting.");
+            return;
+        }
+
+        startTransition(async () => {
+            try {
+                const res = await addSubmission(value, problemId);
+                if (res) {
+                    setToken(res.token);
+                    setSubmissionId(res.submissionId);
+                    setTab("RESULTS");
+                } else {
+                    alert("Submission failed. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error submitting code:", error);
+                alert("An error occurred. Please try again.");
+            }
+        });
+    };
 
     return (
         <div className={"flex justify-between w-[1000px] space-x-4 "}>
@@ -50,7 +74,7 @@ const Submit = () => {
                         }
                     </SelectContent>
                 </Select>
-                <Button className={"bg-white text-black hover:bg-gray-200"}>
+                <Button onClick={handleSubmit} className={"bg-white text-black hover:bg-gray-200"}>
                     Submit
                 </Button>
             </div>
