@@ -80,63 +80,43 @@ export const addSubmission = async (code : string, problemId : string) => {
         })
 
         const res = await axios.request(options);
-        console.log(res);
-        return {
-            token : res.data.token,
-            submissionId : submission.id
-        }
-    } catch (e) {
-        console.log(e);
-    }
-}
 
-export const getSubmission = async (token : string, submissionId : string) => {
-    try {
-        const options = {
-            method: 'GET',
-            url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
-            params: {
-                base64_encoded: 'true',
-                fields: ''
-            },
-            headers: {
-                'x-rapidapi-key': '3a006de1c3mshaf3de9a222d09a8p17a9ccjsn3e4ea8ace224',
-                'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
+        const token =  res.data.token
+
+
+        let status = "In Queue"
+        let result = null;
+
+        for (let i=0; i<10; i++) {
+            await new Promise(res => setTimeout(res, 1000));
+            const res = await axios.request({
+                method: 'GET',
+                url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
+                params: {
+                    base64_encoded: 'true',
+                    fields: '*'
+                },
+                headers: {
+                    'x-rapidapi-key': process.env.NEXT_PUBLIC_RAPID_API_KEY!,
+                    'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
+                }
+            });
+
+            result = res.data;
+
+            if (result?.status?.id >= 3) {
+                status = result.status.description;
+                break;
             }
-        };
-        const response = await axios.request(options);
-        console.log(response);
-        let status;
-
-        switch (response.data.status.id) {
-            case 1:
-                status = "PENDING"
-                break
-            case 2:
-                status = "PENDING"
-                break
-            case 3:
-                status = "ACCEPTED"
-                break
-            case 4:
-                status = "REJECTED"
-                break
-            case 5:
-                status = "NOTSUBMITTED"
-                break
-            case 6:
-                status = "ERROR"
-                break
-            default :
-                break
         }
 
-        await prisma.submission.update({
-            where : {id : submissionId},
+        const submission2 =  await prisma.submission.update({
+            where : {id : submission.id},
             data : {
-                status : status,
+                status
             }
         })
+        return submission2;
     } catch (e) {
         console.log(e);
     }

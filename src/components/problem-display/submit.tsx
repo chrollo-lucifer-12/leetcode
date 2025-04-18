@@ -1,4 +1,4 @@
-import {useState, useTransition} from "react";
+import {useState} from "react";
 import {
     Select,
     SelectContent,
@@ -8,38 +8,19 @@ import {
 } from "@/components/ui/select"
 import {Button} from "@/components/ui/button";
 import {addSubmission} from "@/actions/submissions";
+import {useMutationData} from "@/hooks/useMutationData";
 
 const languages = ["JS", "CPP"];
 
-const Submit = ({problemId, setTab, setToken, setSubmissionId} : {problemId : string, setSubmissionId : React.Dispatch<React.SetStateAction<string>>, setToken : React.Dispatch<React.SetStateAction<string>>, setTab :  React.Dispatch<React.SetStateAction<"TASK" | "SUBMIT" | "RESULTS">>}) => {
+const Submit = ({problemId, setTab}: {problemId : string, setTab :  React.Dispatch<React.SetStateAction<"RESULTS" | "TASK" | "SUBMIT">>
+}) => {
     const [value, setValue] = useState("");
     const linesCount = value.split("\n").length;
     const lines = Array.from({ length: linesCount }, (_, i) => i + 1);
 
-    const [isPending, startTransition] =  useTransition()
 
-    const handleSubmit = async () => {
-        if (!value) {
-            alert("Please select a language and provide code before submitting.");
-            return;
-        }
+    const {mutateAsync, isPending} = useMutationData(["submit-solution"], (data) => addSubmission(data.value,data.problemId), "problem-submissions")
 
-        startTransition(async () => {
-            try {
-                const res = await addSubmission(value, problemId);
-                if (res) {
-                    setToken(res.token);
-                    setSubmissionId(res.submissionId);
-                    setTab("RESULTS");
-                } else {
-                    alert("Submission failed. Please try again.");
-                }
-            } catch (error) {
-                console.error("Error submitting code:", error);
-                alert("An error occurred. Please try again.");
-            }
-        });
-    };
 
     return (
         <div className={"flex justify-between w-[1000px] space-x-4 "}>
@@ -59,7 +40,6 @@ const Submit = ({problemId, setTab, setToken, setSubmissionId} : {problemId : st
                     className={"flex-1 focus:outline-none text-white h-[500px] resize-none"}
                 >
                 </textarea>
-
             </div>
             <div className={"flex flex-col space-y-4 justify-center items-center"}>
                 <Select>
@@ -74,12 +54,16 @@ const Submit = ({problemId, setTab, setToken, setSubmissionId} : {problemId : st
                         }
                     </SelectContent>
                 </Select>
-                <Button onClick={handleSubmit} className={"bg-white text-black hover:bg-gray-200"}>
+                <Button disabled={isPending} onClick={
+                    async () => {
+                        setTab("RESULTS")
+                        await mutateAsync({value, problemId})
+                    }
+                } className={"bg-white text-black hover:bg-gray-200"}>
                     Submit
                 </Button>
             </div>
         </div>
     );
 };
-
 export default Submit;
