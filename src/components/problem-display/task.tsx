@@ -1,14 +1,15 @@
-
 interface TaskProps {
-    description : string
+    description: string
 }
 
-const Task = ({description} : TaskProps) => {
-    return <div>
-        <p className={"text-white"}>
-            {description}
-        </p>
-    </div>
+const Task = ({ description }: TaskProps) => {
+    return (
+        <div className="prose prose-invert max-w-none h-[500px]">
+            <div className="text-gray-200 leading-relaxed">
+                {description}
+            </div>
+        </div>
+    );
 }
 
-export default Task
+export default Task;

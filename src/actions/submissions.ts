@@ -133,3 +133,18 @@ export const getSubmission = async (submissionId : string) => {
         console.log(e)
     }
 }
+
+export const getUserSubmission = async (userName : string) => {
+    try {
+        const submissions = await prisma.submission.findMany({
+            where : {
+                user : {
+                    username : userName
+                 }
+            }
+        })
+        return submissions;
+    } catch (e) {
+        console.log(e)
+    }
+}

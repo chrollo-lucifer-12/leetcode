@@ -109,7 +109,7 @@ export const countSolvedProblems = async () => {
                         userId : user!.id
                     },
                     {
-                        status : "ACCEPTED"
+                        status : "Accepted"
                     }
                 ]
             }
