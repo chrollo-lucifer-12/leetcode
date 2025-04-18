@@ -12,11 +12,6 @@ enum ROLE {
   ADMIN
 }
 
-enum Language {
-  JS
-  CPP
-}
-
 model Session {
   id        String   @id @default(uuid())
   userId    String
@@ -31,12 +26,6 @@ model User {
   Session    Session[]
   Submission Submission[]
   role       ROLE         @default(USER)
-}
-
-model DefaultCode {
-  id       String   @id @default(uuid())
-  language Language
-  code     String
 }
 
 model Problem {
@@ -62,7 +51,7 @@ model Submission {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   code      String
-  language  Language
+  language  String
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

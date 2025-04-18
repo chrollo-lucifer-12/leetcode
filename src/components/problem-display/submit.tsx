@@ -10,16 +10,23 @@ import {Button} from "@/components/ui/button";
 import {addSubmission} from "@/actions/submissions";
 import {useMutationData} from "@/hooks/useMutationData";
 
-const languages = ["JS", "CPP"];
+const languages = [
+    {name : "C++ (GCC 9.2.0)",
+    code : 54},
+    {name : "Python (3.8.1)",
+    code : 71},
+    {name : "JavaScript (Node.js)",
+    code : 63}, {name : "Java (OpenJDK 13)", code : 62}, {name :  "C (GCC 9.2.0)", code : 50}];
 
 const Submit = ({problemId, setTab}: {problemId : string, setTab :  React.Dispatch<React.SetStateAction<"RESULTS" | "TASK" | "SUBMIT">>
 }) => {
     const [value, setValue] = useState("");
     const linesCount = value.split("\n").length;
     const lines = Array.from({ length: linesCount }, (_, i) => i + 1);
+    const [languageCode, setLanguageCode] = useState(0);
+    const [languageName, setLanguageName] = useState("")
 
-
-    const {mutateAsync, isPending} = useMutationData(["submit-solution"], (data) => addSubmission(data.value,data.problemId), "problem-submissions")
+    const {mutateAsync, isPending} = useMutationData(["submit-solution"], (data) => addSubmission(data.value,data.problemId, data.languageCode, data.languageName), "problem-submissions")
 
 
     return (
@@ -42,22 +49,30 @@ const Submit = ({problemId, setTab}: {problemId : string, setTab :  React.Dispat
                 </textarea>
             </div>
             <div className={"flex flex-col space-y-4 justify-center items-center"}>
-                <Select>
-                    <SelectTrigger className="w-full">
+                <Select onValueChange={(val) => {
+                    const selected = languages.find(lang => lang.name === val);
+                    if (selected) {
+                        setLanguageCode(selected.code);
+                        setLanguageName(selected.name)
+                    }
+                }}>
+                    <SelectTrigger className="w-full text-white">
                         <SelectValue className={"text-white"} placeholder="Language" />
                     </SelectTrigger>
                     <SelectContent>
                         {
                             languages.map((language) => (
-                                <SelectItem key={language} value={language}>{language}</SelectItem>
+                                <SelectItem  key={language.name} value={language.name}>{language.name}</SelectItem>
                             ))
                         }
                     </SelectContent>
                 </Select>
                 <Button disabled={isPending} onClick={
                     async () => {
-                        setTab("RESULTS")
-                        await mutateAsync({value, problemId})
+                        if (languageCode && languageName) {
+                            setTab("RESULTS")
+                            await mutateAsync({value, problemId, languageCode, languageName})
+                        }
                     }
                 } className={"bg-white text-black hover:bg-gray-200"}>
                     Submit

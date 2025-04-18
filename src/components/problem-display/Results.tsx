@@ -7,7 +7,7 @@ import Image from "next/image";
 
 const Results = ({problemId} : {problemId : string}) => {
 
-    const {isFetching, data} = useQueryData(["problem-submissions"], () => getSubmissions(problemId));
+    const {isFetching, data} = useQueryData(["problem-submissions", problemId], () => getSubmissions(problemId));
 
     if (isFetching) {
         return <Image src={"./loader.svg"} alt={"loader"} width={20} height={20} />

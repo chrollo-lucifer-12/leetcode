@@ -28,7 +28,8 @@ export const fetchSubmissions = async () => {
 }
 
 
-export const addSubmission = async (code : string, problemId : string) => {
+export const addSubmission = async (code : string, problemId : string, languageCode : number, languageName: string) => {
+    console.log(languageName,languageCode);
     try {
         const {user} = await getCurrentSession();
 
@@ -61,7 +62,7 @@ export const addSubmission = async (code : string, problemId : string) => {
                 'Content-Type': 'application/json'
             },
             data: {
-                language_id: 105,
+                language_id: languageCode,
                 source_code: base64(code),
                 stdin: base64(testCases[0].input),
                 expected_output : base64(testCases[0].output),
@@ -72,21 +73,16 @@ export const addSubmission = async (code : string, problemId : string) => {
         const submission = await prisma.submission.create({
             data : {
                 code : code,
-                language : "CPP",
+                language : languageName,
                 problemId,
                 status : "PENDING",
                 userId : user.id
             }
         })
-
         const res = await axios.request(options);
-
         const token =  res.data.token
-
-
         let status = "In Queue"
         let result = null;
-
         for (let i=0; i<10; i++) {
             await new Promise(res => setTimeout(res, 1000));
             const res = await axios.request({
@@ -109,7 +105,6 @@ export const addSubmission = async (code : string, problemId : string) => {
                 break;
             }
         }
-
         const submission2 =  await prisma.submission.update({
             where : {id : submission.id},
             data : {

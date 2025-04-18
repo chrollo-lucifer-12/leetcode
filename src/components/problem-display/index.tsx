@@ -12,7 +12,7 @@ import Submit from "@/components/problem-display/submit";
 const tabs = ["TASK", "SUBMIT", "RESULTS"] as const;
 
 const ProblemDisplay = ({problemId} : {problemId : string}) => {
-    const {data, isFetching} = useQueryData(["problem-details"], () => getProblemDetails(problemId))
+    const {data, isFetching} = useQueryData(["problem-details", problemId], () => getProblemDetails(problemId))
 
     const problem = data as SingleProblemProps;
 
@@ -21,8 +21,6 @@ const ProblemDisplay = ({problemId} : {problemId : string}) => {
     if (isFetching) {
         return <div className="text-white text-center mt-10">Loading problem details...</div>;
     }
-
-
     return <div className={"ml-32 mr-32 mt-6 "}>
         <p className={"text-white text-2xl font-bold"}>{problem.title}</p>
         <div className="flex space-x-4 mt-2">

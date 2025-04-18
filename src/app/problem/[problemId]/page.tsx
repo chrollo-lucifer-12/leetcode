@@ -11,19 +11,17 @@ const Page =  async (props : {params : Params}) => {
     const query = new QueryClient();
 
     await query.prefetchQuery({
-        queryKey : ["problem-details"],
+        queryKey : ["problem-details", problemId],
         queryFn : () => getProblemDetails(problemId),
     })
 
     await query.prefetchQuery({
-        queryKey : ["problem-submissions"],
-        queryFn : () => getSubmissions(problemId)
+        queryKey : ["problem-submissions", problemId],
+        queryFn : () => getSubmissions(problemId),
     })
 
     return <HydrationBoundary state={dehydrate(query)}>
         <ProblemDisplay problemId={problemId}/>
     </HydrationBoundary>
 }
-
-
 export default Page
