@@ -1,4 +1,5 @@
 import {z} from "zod"
+import {ROLE} from "@prisma/client";
 
 export const SignupFormSchema = z.object({
     username : z.string().min(3, {message : "Username is too short"}),
@@ -47,9 +48,11 @@ export const routes = [
     }
 ]
 
+export type ProblemSubmissionProps =  {     code: string  ,   language: string  ,   status: string ,    createdAt: Date,     problem: {         id: string   ,      title: string   ,      description: string     }  ,   user: {         id: string    ,     username: string    ,     password: string   ,      role: ROLE     } }
+
 export type SingleProblemProps =   {     id: string ,   title: string   ,  description: string }
 
-export type  ProblemSubmissionsProps = {     status: string   ,  language: string  ,   user: {         username: string     }   ,  createdAt: Date }
+export type  ProblemSubmissionsProps = {     status: string   , id : string,  language: string  ,   user: {         username: string     }   ,  createdAt: Date }
 
 export type ProblemDisplayProps =  ({     Submission: {         status: string     }[] } & {     id: string  ,   title: string   ,  description: string })
 

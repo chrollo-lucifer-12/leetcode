@@ -9,6 +9,7 @@ import {
 import {Button} from "@/components/ui/button";
 import {addSubmission} from "@/actions/submissions";
 import {useMutationData} from "@/hooks/useMutationData";
+import TextEditor from "@/components/text-editor";
 
 const languages = [
     {name : "C++ (GCC 9.2.0)",
@@ -31,23 +32,7 @@ const Submit = ({problemId, setTab}: {problemId : string, setTab :  React.Dispat
 
     return (
         <div className={"flex justify-between w-[1000px] space-x-4 "}>
-            <div className={"flex text-sm w-[80%] bg-[#262626] rounded"}>
-                <div className={"w-[30px] overflow-hidden max-h-[500px]"}>
-                    {lines.map((line) => (
-                        <div key={line} className={"text-[#656665] text-center"}>
-                            {line}
-                        </div>
-                    ))}
-                </div>
-                <textarea
-                    value={value}
-                    onChange={(e) => {
-                        setValue(e.target.value);
-                    }}
-                    className={"flex-1 focus:outline-none text-white h-[500px] resize-none"}
-                >
-                </textarea>
-            </div>
+            <TextEditor value={value} setValue={setValue} isDisabled={false}/>
             <div className={"flex flex-col space-y-4 justify-center items-center"}>
                 <Select onValueChange={(val) => {
                     const selected = languages.find(lang => lang.name === val);
@@ -81,4 +66,5 @@ const Submit = ({problemId, setTab}: {problemId : string, setTab :  React.Dispat
         </div>
     );
 };
+
 export default Submit;

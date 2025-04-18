@@ -37,9 +37,6 @@ export const addSubmission = async (code : string, problemId : string, languageC
         const findProblem = await prisma.problem.findUnique({where : {id : problemId}});
         if (!findProblem) return;
 
-
-        console.log("submitting")
-
         const testCases = await prisma.testCase.findMany({
             where : {
                 problemId
@@ -114,5 +111,25 @@ export const addSubmission = async (code : string, problemId : string, languageC
         return submission2;
     } catch (e) {
         console.log(e);
+    }
+}
+
+
+export const getSubmission = async (submissionId : string) => {
+    try {
+        const submission = await prisma.submission.findUnique({
+            where : {id : submissionId},
+            select : {
+                user : true,
+                problem : true,
+                language : true,
+                code : true,
+                createdAt : true,
+                status : true,
+            }
+        })
+        return submission
+    } catch (e) {
+        console.log(e)
     }
 }

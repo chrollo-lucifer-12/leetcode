@@ -24,4 +24,5 @@ const Page =  async (props : {params : Params}) => {
         <ProblemDisplay problemId={problemId}/>
     </HydrationBoundary>
 }
+
 export default Page

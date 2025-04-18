@@ -35,15 +35,6 @@ export const fetchAllProblems = async () => {
     }
 }
 
-export const fetchDefaultCode = async () => {
-    try {
-        const codes = await prisma.defaultCode.findMany();
-        return codes;
-    } catch (e) {
-        console.log(e);
-    }
-}
-
 export const addNewProblem = async (title : string, description : string) => {
     console.log("Add new problem hit")
     try {
@@ -164,7 +155,8 @@ export const getSubmissions = async (problemId : string) => {
                 },
                 status : true,
                 language : true,
-                createdAt : true
+                createdAt : true,
+                id : true
             }
         })
         return submissions;

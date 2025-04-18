@@ -4,10 +4,13 @@ import {useQueryData} from "@/hooks/useQueryData";
 import {getSubmissions} from "@/actions/problem";
 import {ProblemSubmissionsProps} from "@/lib/definitions";
 import Image from "next/image";
+import {useRouter} from "next/navigation";
 
 const Results = ({problemId} : {problemId : string}) => {
 
     const {isFetching, data} = useQueryData(["problem-submissions", problemId], () => getSubmissions(problemId));
+
+    const router = useRouter()
 
     if (isFetching) {
         return <Image src={"./loader.svg"} alt={"loader"} width={20} height={20} />
@@ -27,7 +30,9 @@ const Results = ({problemId} : {problemId : string}) => {
             </thead>
             <tbody>
             {submissions.map((entry, i) => (
-                <tr key={i} className="text-center">
+                <tr key={i} className="text-center hover:cursor-pointer" onClick={() => {
+                    router.push(`/submission/${entry.id}`)
+                }}>
                     <td>{entry.user.username}</td>
                     <td className="border border-gray-600 p-2">{entry.createdAt.toDateString()}</td>
                     <td className="border border-gray-600 p-2">{entry.language}</td>
