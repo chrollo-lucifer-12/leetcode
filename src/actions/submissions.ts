@@ -2,6 +2,7 @@
 import {prisma} from "@/lib/db";
 import axios from "axios"
 import {getCurrentSession} from "@/lib/cookie";
+import {globalPOSTRateLimit} from "@/lib/request";
 
 export const fetchSubmissions = async () => {
     try {
@@ -30,6 +31,9 @@ export const fetchSubmissions = async () => {
 
 export const addSubmission = async (code : string, problemId : string, languageCode : number, languageName: string) => {
     console.log(languageName,languageCode);
+
+    if (!await globalPOSTRateLimit()) return;
+
     try {
         const {user} = await getCurrentSession();
 
@@ -78,41 +82,14 @@ export const addSubmission = async (code : string, problemId : string, languageC
                 token
             }
         })
-        void pollSubmission(submission.id);
-        return submission.id;
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-export const pollSubmission = async (submissionId : string) => {
-    try {
-        const findSubmission = await prisma.submission.findUnique({where : {id : submissionId}});
-        const token = findSubmission!.token;
-        const res = await axios.request({
-            method: 'GET',
-            url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
-            params: {
-                base64_encoded: 'true',
-                fields: '*'
-            },
-            headers: {
-                'x-rapidapi-key': process.env.NEXT_PUBLIC_RAPID_API_KEY!,
-                'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
-            }
-        });
-        console.log(res.data.status.description);
-        await prisma.submission.update({
-            where : {id : submissionId},
-            data : {
-                status : res.data.status.description
-            }
+        await axios.post(process.env.NEXT_PUBLIC_BACKEND_URL!, {
+            token,
+            submissionId : submission.id
         })
     } catch (e) {
         console.log(e);
     }
 }
-
 
 export const getSubmission = async (submissionId : string) => {
     try {

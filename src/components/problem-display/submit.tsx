@@ -15,10 +15,6 @@ import TextEditor from "@/components/text-editor";
 
 const languages = [
     { name: "C++ (GCC 9.2.0)", code: 54 },
-    { name: "Python (3.8.1)", code: 71 },
-    { name: "JavaScript (Node.js)", code: 63 },
-    { name: "Java (OpenJDK 13)", code: 62 },
-    { name: "C (GCC 9.2.0)", code: 50 }
 ];
 
 const Submit = ({
