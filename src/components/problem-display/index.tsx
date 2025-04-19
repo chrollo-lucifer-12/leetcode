@@ -15,6 +15,7 @@ const ProblemDisplay = ({ problemId }: { problemId: string }) => {
     const { data, isFetching } = useQueryData(["problem-details", problemId], () => getProblemDetails(problemId))
     const problem = data as SingleProblemProps;
     const [tab, setTab] = useState<"TASK" | "SUBMIT" | "RESULTS">("TASK")
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     if (isFetching) {
         return (
@@ -49,8 +50,8 @@ const ProblemDisplay = ({ problemId }: { problemId: string }) => {
 
                 <div className="p-6">
                     {tab === "TASK" && <Task description={problem.description} />}
-                    {tab === "RESULTS" && <Results problemId={problemId} />}
-                    {tab === "SUBMIT" && <Submit setTab={setTab} problemId={problemId} />}
+                    {tab === "RESULTS" && <Results isSubmitted={isSubmitted} setIsSubmitted={setIsSubmitted} problemId={problemId} />}
+                    {tab === "SUBMIT" && <Submit setIsSubmitted={setIsSubmitted} setTab={setTab} problemId={problemId} />}
                 </div>
             </div>
         </div>

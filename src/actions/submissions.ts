@@ -66,49 +66,48 @@ export const addSubmission = async (code : string, problemId : string, languageC
                 cpu_time_limit : 2,
             }
         };
-
+        const res = await axios.request(options);
+        const token =  res.data.token
         const submission = await prisma.submission.create({
             data : {
                 code : code,
                 language : languageName,
                 problemId,
                 status : "PENDING",
-                userId : user.id
+                userId : user.id,
+                token
             }
         })
-        const res = await axios.request(options);
-        const token =  res.data.token
-        let status = "In Queue"
-        let result = null;
-        for (let i=0; i<10; i++) {
-            await new Promise(res => setTimeout(res, 1000));
-            const res = await axios.request({
-                method: 'GET',
-                url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
-                params: {
-                    base64_encoded: 'true',
-                    fields: '*'
-                },
-                headers: {
-                    'x-rapidapi-key': process.env.NEXT_PUBLIC_RAPID_API_KEY!,
-                    'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
-                }
-            });
+        void pollSubmission(submission.id);
+        return submission.id;
+    } catch (e) {
+        console.log(e);
+    }
+}
 
-            result = res.data;
-
-            if (result?.status?.id >= 3) {
-                status = result.status.description;
-                break;
+export const pollSubmission = async (submissionId : string) => {
+    try {
+        const findSubmission = await prisma.submission.findUnique({where : {id : submissionId}});
+        const token = findSubmission!.token;
+        const res = await axios.request({
+            method: 'GET',
+            url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
+            params: {
+                base64_encoded: 'true',
+                fields: '*'
+            },
+            headers: {
+                'x-rapidapi-key': process.env.NEXT_PUBLIC_RAPID_API_KEY!,
+                'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
             }
-        }
-        const submission2 =  await prisma.submission.update({
-            where : {id : submission.id},
+        });
+        console.log(res.data.status.description);
+        await prisma.submission.update({
+            where : {id : submissionId},
             data : {
-                status
+                status : res.data.status.description
             }
         })
-        return submission2;
     } catch (e) {
         console.log(e);
     }

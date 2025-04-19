@@ -4,11 +4,28 @@ import { useQueryData } from "@/hooks/useQueryData";
 import { getSubmissions } from "@/actions/problem";
 import { ProblemSubmissionsProps } from "@/lib/definitions";
 import { useRouter } from "next/navigation";
+import {useEffect} from "react";
 
-const Results = ({ problemId }: { problemId: string }) => {
-    const { isFetching, data } = useQueryData(["problem-submissions", problemId], () => getSubmissions(problemId));
+const Results = ({ problemId, isSubmitted, setIsSubmitted }: { problemId: string, isSubmitted : boolean, setIsSubmitted :  React.Dispatch<React.SetStateAction<boolean>>  }) => {
+    const { isFetching, data, refetch } = useQueryData(["problem-submissions", problemId], () => getSubmissions(problemId));
+
     const router = useRouter();
     const submissions = data as ProblemSubmissionsProps[];
+
+    useEffect(() => {
+        if (!isSubmitted) return;
+        const interval = setInterval(() => {
+            if (!submissions?.some((s) => s.status === "PENDING")) {
+                clearInterval(interval);
+                setIsSubmitted(false);
+                return;
+            }
+            console.log("refetching")
+            refetch();
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [isSubmitted, submissions, refetch]);
 
     const getStatusBadge = (status: string) => {
         let bgColor;
@@ -34,24 +51,17 @@ const Results = ({ problemId }: { problemId: string }) => {
         );
     };
 
-    if (isFetching) {
-        return (
-            <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        );
-    }
 
     if (!submissions || submissions.length === 0) {
         return (
-            <div className="text-center p-12 text-gray-400">
+            <div className="text-center p-12 text-gray-400 h-[500px]">
                 No submissions found for this problem yet.
             </div>
         );
     }
 
     return (
-        <div className="overflow-x-auto h-[500px]">
+        <div className="overflow-x-auto h-[800px]">
             <table className="w-full text-sm text-left">
                 <thead className="text-gray-400 bg-gray-700">
                 <tr>

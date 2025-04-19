@@ -145,8 +145,15 @@ export const getProblemDetails = async (problemId : string) => {
 
 export const getSubmissions = async (problemId : string) => {
     try {
+        const {user} = await getCurrentSession();
+        if (!user) return;
         const submissions = await prisma.submission.findMany({
-            where : {problemId},
+            where : {
+                AND : [
+                    {problemId},
+                    {userId : user.id}
+                ]
+            },
             select : {
                 user : {
                     select : {

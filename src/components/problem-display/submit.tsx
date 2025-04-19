@@ -23,10 +23,12 @@ const languages = [
 
 const Submit = ({
                     problemId,
-                    setTab
+                    setTab,
+                    setIsSubmitted
                 }: {
     problemId: string,
-    setTab: React.Dispatch<React.SetStateAction<"RESULTS" | "TASK" | "SUBMIT">>
+    setTab: React.Dispatch<React.SetStateAction<"RESULTS" | "TASK" | "SUBMIT">>,
+    setIsSubmitted :  React.Dispatch<React.SetStateAction<boolean>>
 }) => {
     const [value, setValue] = useState("");
     const [languageCode, setLanguageCode] = useState(0);
@@ -75,6 +77,7 @@ const Submit = ({
                     disabled={isPending || !languageName || !value.trim()}
                     onClick={async () => {
                         if (languageCode && languageName) {
+                            setIsSubmitted(true);
                             await mutateAsync({ value, problemId, languageCode, languageName });
                             setTab("RESULTS");
                         }

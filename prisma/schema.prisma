@@ -53,6 +53,7 @@ model Submission {
   code      String
   language  String
   status    String
+  token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
